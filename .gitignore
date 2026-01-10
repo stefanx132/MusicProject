@@ -1,5 +1,10 @@
-.venv/
-env/
-
 .env
-.spotipy_cache
+.cache
+.spotify_cache
+.spotify_cache_file
+venv/
+__pycache__/
+*.pyc
+.idea/
+.vscode/
+.DS_Store
