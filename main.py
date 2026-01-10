@@ -9,9 +9,14 @@ import pytz
 load_dotenv()
 
 def get_clean_env(var_name):
-    """Citește variabila și elimină ghilimelele duble sau simple dacă există."""
     val = os.getenv(var_name)
     if val:
+        return val.strip().strip('"').strip("'")
+    return None
+
+CLIENT_ID = get_clean_env("SPOTIPY_CLIENT_ID")
+CLIENT_SECRET = get_clean_env("SPOTIPY_CLIENT_SECRET")
+REDIRECT_URI = get_clean_env("SPOTIPY_REDIRECT_URI")
         return val.strip().strip('"').strip("'")
     return None
 
@@ -49,6 +54,13 @@ def authentication():
             client_id=CLIENT_ID,
             client_secret=CLIENT_SECRET,# Acum este curat
             redirect_uri=REDIRECT_URI,
+            with open(cache_path, "w") as f:
+                f.write(clean_content)
+    try:
+        user = spotipy.Spotify(auth_manager=SpotifyOAuth(
+            client_id=CLIENT_ID,
+            client_secret=CLIENT_SECRET,# Acum este curat
+            redirect_uri=REDIRECT_URI,
             scope=SCOPE,
             cache_path=cache_path,
             open_browser=False
@@ -81,8 +93,7 @@ def get_and_display_data(sp_user):
 
     print("\nUSER'S RECENTLY PLAYED SONGS\n")
     try:
-        recently_played_results = sp_user.current_user_recently_played(limit=10)
-        for i, item in enumerate(recently_played_results['items']):
+        recently_played_results = sp_user.current_user_recently_played(limit=10)        for i, item in enumerate(recently_played_results['items']):
             track = item['track']
             artist_names = ", ".join([artist['name'] for artist in track['artists']])
             
